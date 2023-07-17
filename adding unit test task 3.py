@@ -1,30 +1,54 @@
 import unittest
-from datetime import date, timedelta
-from engine.model.calliope import Calliope
+from datetime import date
+from car import Car
+from engine.capulet_engine import CapuletEngine
+from engine.sternman_engine import SternmanEngine
+from engine.willoughby_engine import WilloughbyEngine
+from battery.nubbin_battery import NubbinBattery
+from battery.spindler_battery import SpindlerBattery
+from car_factory import CarFactory
 
 
-class TestCalliope(unittest.TestCase):
+class TestCarFactory(unittest.TestCase):
     def setUp(self):
-        self.today = date.today()
-        self.one_year_ago = self.today - timedelta(days=365)
-        self.three_years_ago = self.today - timedelta(days=3 * 365)
-        self.five_years_ago = self.today - timedelta(days=5 * 365)
+        self.current_date = date.today()
+        self.last_service_date = date.today()
+        self.current_mileage = 0
+        self.last_service_mileage = 0
 
-    def test_battery_needs_service(self):
-        car = Calliope(self.three_years_ago, 0, 0)
-        self.assertTrue(car.needs_service())
+    def test_create_calliope(self):
+        car = CarFactory.create_calliope(self.current_date, self.last_service_date, self.current_mileage,
+                                         self.last_service_mileage)
+        self.assertIsInstance(car, Car)
+        self.assertIsInstance(car.engine, CapuletEngine)
+        self.assertIsInstance(car.battery, SpindlerBattery)
 
-    def test_battery_does_not_need_service(self):
-        car = Calliope(self.one_year_ago, 0, 0)
-        self.assertFalse(car.needs_service())
+    def test_create_glissade(self):
+        car = CarFactory.create_glissade(self.current_date, self.last_service_date, self.current_mileage,
+                                         self.last_service_mileage)
+        self.assertIsInstance(car, Car)
+        self.assertIsInstance(car.engine, WilloughbyEngine)
+        self.assertIsInstance(car.battery, SpindlerBattery)
 
-    def test_engine_needs_service(self):
-        car = Calliope(self.today, 30001, 0)
-        self.assertTrue(car.needs_service())
+    def test_create_palindrome(self):
+        car = CarFactory.create_palindrome(self.current_date, self.last_service_date, False)
+        self.assertIsInstance(car, Car)
+        self.assertIsInstance(car.engine, SternmanEngine)
+        self.assertIsInstance(car.battery, SpindlerBattery)
 
-    def test_engine_does_not_need_service(self):
-        car = Calliope(self.today, 30000, 0)
-        self.assertFalse(car.needs_service())
+    def test_create_rorschach(self):
+        car = CarFactory.create_rorschach(self.current_date, self.last_service_date, self.current_mileage,
+                                          self.last_service_mileage)
+        self.assertIsInstance(car, Car)
+        self.assertIsInstance(car.engine, WilloughbyEngine)
+        self.assertIsInstance(car.battery, NubbinBattery)
+
+    def test_create_thovex(self):
+        car = CarFactory.create_thovex(self.current_date, self.last_service_date, self.current_mileage,
+                                       self.last_service_mileage)
+        self.assertIsInstance(car, Car)
+        self.assertIsInstance(car.engine, CapuletEngine)
+        self.assertIsInstance(car.battery, NubbinBattery)
 
 
 if __name__ == '__main__':
